@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import BookModal from '@/components/BookModal/BookModal';
+
 
 interface Livro {
   id: number;
@@ -10,6 +12,7 @@ interface Livro {
   ano: number;
   estrelas: number;
   genero: string;
+  sinopse?: string;
 }
 
 const livrosIniciais: Livro[] = [
@@ -21,6 +24,7 @@ const livrosIniciais: Livro[] = [
     ano: 1943,
     estrelas: 4.5,
     genero: 'Infantil',
+    sinopse: 'O Pequeno Príncipe conta a história de um menino que vive em um pequeno planeta e viaja por outros mundos em busca de amizade e sabedoria. Em suas aventuras, ele aprende lições sobre amor, solidão e o que realmente é importante na vida, descobrindo que “o essencial é invisível aos olhos.”'
   },
   {
     id: 2,
@@ -30,6 +34,7 @@ const livrosIniciais: Livro[] = [
     ano: 1949,
     estrelas: 4.8,
     genero: 'Distopia',
+    sinopse: '1984, de George Orwell, conta a história de Winston Smith, que vive em um mundo controlado por um governo totalitário liderado pelo Grande Irmão. Nesse lugar, tudo é vigiado, até os pensamentos. Winston começa a questionar as regras e busca a verdade, mas descobre como é perigoso pensar diferente em uma sociedade que controla tudo.'
   },
   {
     id: 3,
@@ -39,6 +44,7 @@ const livrosIniciais: Livro[] = [
     ano: 1899,
     estrelas: 4.2,
     genero: 'Romance',
+    sinopse: 'Dom Casmurro, de Machado de Assis, conta a história de Bentinho, que desde jovem é apaixonado por Capitu. Eles se casam, mas com o tempo Bentinho passa a desconfiar que ela o traiu com seu melhor amigo, Escobar. A dúvida sobre a fidelidade de Capitu domina sua vida, deixando no ar se a traição realmente aconteceu ou se foi fruto de ciúme e imaginação.'
   },
    {
     id: 4,
@@ -48,6 +54,7 @@ const livrosIniciais: Livro[] = [
     ano: 1513,
     estrelas: 4.9,
     genero: 'Clássico',
+    sinopse: 'O Príncipe, de Maquiavel, é um livro que ensina como um governante deve agir para conquistar e manter o poder. Maquiavel mostra que, na política, às vezes é preciso ser esperto e até agir com dureza para garantir a estabilidade do Estado. A obra fala sobre liderança, estratégia e a realidade do poder, sem ilusões morais.'
   },
   {
     id: 5,
@@ -57,15 +64,17 @@ const livrosIniciais: Livro[] = [
     ano: 1844,
     estrelas: 4.7,
     genero: 'Clássico',
+    sinopse: 'O Conde de Monte Cristo, de Alexandre Dumas, conta a história de Edmond Dantès, um jovem injustamente preso por traição. Após escapar da prisão e encontrar um grande tesouro, ele assume a identidade de Conde de Monte Cristo e busca vingança contra os que o traíram. A história fala sobre justiça, perdão e as consequências da vingança.'
   },
   {
     id: 6,
     capa: 'https://m.media-amazon.com/images/I/71lrH3ZLcaL._SY385_.jpg',
-    titulo: 'Grande Sertão Veredas',
+    titulo: 'Grande Sertão: Veredas',
     autor: 'Guimarães Rosa',
     ano: 1956,
     estrelas: 4.8,
     genero: 'Romance',
+    sinopse: 'Grande Sertão: Veredas, de Guimarães Rosa, conta a história de Riobaldo, um ex-jagunço que narra suas aventuras e reflexões sobre o amor, a guerra e o bem e o mal. Ele relembra sua vida no sertão e sua relação com Diadorim, misturando realidade e filosofia em uma linguagem poética sobre a alma humana e o destino.'
   }
 ];
 
@@ -73,7 +82,7 @@ export default function Page() {
   const [livros, setLivros] = useState<Livro[]>(livrosIniciais);
   const [termoBusca, setTermoBusca] = useState('');
   const [generoSelecionado, setGeneroSelecionado] = useState('todos');
-
+  const [visualizarBookModal, setVisualizarBookModal] = useState<Livro | null>(null);
   const generos = ['todos', 'Infantil', 'Distopia', 'Romance'];
 
   // Filtra livros por busca e gênero
@@ -88,11 +97,9 @@ export default function Page() {
   });
 
   // Funções dos botões
-  const visualizarLivro = (livro: Livro) => {
-    alert(
-      `Visualizando:\n\nTítulo: ${livro.titulo}\nAutor: ${livro.autor}\nAno: ${livro.ano}\nGênero: ${livro.genero}\nEstrelas: ${livro.estrelas}`
-    );
-  };
+  const visualizarLivro = (livro: Livro) => 
+  {setVisualizarBookModal(livro);}
+  
 
   const editarLivro = (livro: Livro) => {
     alert(`Editar livro: ${livro.titulo}\n(Implementar página de edição depois)`);
@@ -173,6 +180,17 @@ export default function Page() {
           ))}
         </div>
       )}
+      {visualizarBookModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div>
+          <BookModal  {...visualizarBookModal}
+          onClose={() => setVisualizarBookModal(null)}
+          onEdit={() => editarLivro(visualizarBookModal)}
+          onDelete={() => excluirLivro(visualizarBookModal)}
+          />
+        </div>
+      </div>
+    )}
     </div>
-  );
+);
 }
