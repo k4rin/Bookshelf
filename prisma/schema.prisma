@@ -1,0 +1,37 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Genre {
+  id    Int     @id @default(autoincrement())
+  title String
+  books BookGenre[]
+}
+
+model Book {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  title       String
+  author      String
+  status      String
+  pages       Int?
+  currentPage Int?
+  rating      Float?
+  genres      BookGenre[]
+}
+
+model BookGenre {
+  id      Int   @id @default(autoincrement())
+  bookId  Int
+  genreId Int
+  book    Book   @relation(fields: [bookId], references: [id])
+  genre   Genre  @relation(fields: [genreId], references: [id])
+}
